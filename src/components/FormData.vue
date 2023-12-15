@@ -31,9 +31,14 @@
       style="width: 300px; margin: 10px"
     >
       <template #extra>
-        <div style="cursor: pointer">
-          <DeleteOutlined @click="openConfirmDialog(newUser.id)" />
-        </div>
+        <a-row>
+          <div style="cursor: pointer" @click="openEditDialog(newUser)">
+            <EditOutlined />
+          </div>
+          <div style="cursor: pointer">
+            <DeleteOutlined @click="openConfirmDialog(newUser.id)" />
+          </div>
+        </a-row>
       </template>
       <p>{{ newUser.name }}</p>
       <p>{{ newUser.email }}</p>
@@ -45,15 +50,41 @@
     v-model:open="isConfirmDialogVisible"
     title="Delete User"
     ok-text="Delete"
-    @ok="deleteUser(newUser.id)">
+    @ok="deleteUser(newUser.id)"
+  >
     <p>Are you sure you want to delete this user?</p>
-    </a-modal>
+  </a-modal>
+  <a-modal
+    v-model:visible="isEditDialogVisible"
+    ok-text="Save"
+    cancel-text="Cancel"
+    @ok="EditUser(newUser)"
+  >
+    <template #title>
+      <a-icon type="edit" />
+      Edit User
+    </template>
+    <a-form-model :model="newUser">
+      <a-form-model-item label="Name" prop="name">
+        <a-input v-model="newUser.name" />
+      </a-form-model-item>
+      <a-form-model-item label="Email" prop="email">
+        <a-input v-model="newUser.email" />
+      </a-form-model-item>
+      <a-form-model-item label="Phone" prop="phone">
+        <a-input v-model="newUser.phone" />
+      </a-form-model-item>
+      <a-form-model-item label="Website" prop="website">
+        <a-input v-model="newUser.website" />
+      </a-form-model-item>
+    </a-form-model>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { DeleteOutlined } from "@ant-design/icons-vue";
-import { notification } from 'ant-design-vue';
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons-vue";
+import { notification } from "ant-design-vue";
 interface User {
   id: number;
   name: string;
@@ -74,7 +105,14 @@ const newUser = ref<User>({
   website: "",
 });
 const isConfirmDialogVisible = ref(false);
+const isEditDialogVisible = ref(false);
 
+const openEditDialog = (user: any) => {
+  console.log(user);
+  newUser.value = user;
+  console.log(newUser);
+  isEditDialogVisible.value = true;
+};
 const openConfirmDialog = (id: number) => {
   newUser.value = users.value.find((user) => user.id === id)!;
   isConfirmDialogVisible.value = true;
@@ -116,6 +154,28 @@ const addUsers = async () => {
     website: "",
   };
   showForm.value.showForm = false;
+};
+
+const EditUser = async (newUser: any) => {
+  const response = await fetch(
+    `https://jsonplaceholder.typicode.com/users/${newUser.value.id}`,
+    {
+      method: "PUT",
+      body: JSON.stringify(newUser.value),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    }
+  );
+  if (response.ok) {
+    notification.success({ message: "User updated successfully" });
+    showForm.value.showForm = false;
+    getUsers().then((data) => (users.value = data));
+  }
+  if (!response.ok) {
+    throw new Error("Something went wrong");
+    notification.error({ message: "Something went wrong" });
+  }
 };
 const deleteUser = async (id: number) => {
   const response = await fetch(
