@@ -1,18 +1,10 @@
 <script setup lang="ts">
-import Form from './components/FormData.vue'
+import Form from "./components/FormData.vue";
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
+  <!-- <Card/> -->
   <Form />
-  
 </template>
 
 <style scoped>

@@ -9,7 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "ant-design-vue": "4.x",
     "axios": "^1.6.2",
+    "oh-vue-icons": "^1.0.0-rc3",
     "vue": "^3.3.11"
   },
   "devDependencies": {
