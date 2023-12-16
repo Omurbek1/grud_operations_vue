@@ -13,6 +13,7 @@
     "ant-design-vue": "4.x",
     "axios": "^1.6.2",
     "oh-vue-icons": "^1.0.0-rc3",
+    "path": "^0.12.7",
     "vue": "^3.3.11"
   },
   "devDependencies": {
